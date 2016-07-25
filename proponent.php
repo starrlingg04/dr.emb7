@@ -9,31 +9,7 @@
 	include "menu.php";
 
 
-	function proponentsForm()
-	{
-
-		echo"<div class='form-group'>
-				<label class='control-label col-lg-3'>Subject Type<font color='red'>*</font></label>
-					<div class='col-lg-9'>
-						<select class='form-control chzn-select'>";
-
-							$sql_subj = mysql_query("SELECT * FROM subject");
-							while ($fetch_subj = mysql_fetch_assoc($sql_subj)) {
-								echo "<option>".$fetch_subj['subject']."</option>";
-							}
-												
-		echo"			</select>
-					</div>
-			</div>
-
-			<div class='form-group'>
-				<label class='control-label col-lg-3'>Proponent Name<font color='red'>*</font></label>
-					<div class='col-lg-9'>
-						<input type='text' class='form-control input-sm' data-required='true' placeholder='Required Field'>
-							<div class='seperator'></div>
-					</div>
-			</div>";
-	}
+	
 ?>
 		
 
@@ -51,72 +27,54 @@
 						<div class="panel panel-default">
 							<form class="form-horizontal form-border no-margin" id="basic-constraint" data-validate="parsley" novalidate>
 								<div class="panel-heading">
-									Proponents Information
+									<h4>List of Proponents</h4>
 								</div>
 								<div class="panel-body">
-								<?php
-									proponentsForm();
-								?>
-								
-									
-									<div class="form-group">
-										<label class="control-label col-lg-3">Min Length</label>
-										<div class="col-lg-9">
-											<input type="text" class="form-control input-sm" data-minlength="6" placeholder="minlenght = 6">
-										</div>
-									</div>
-									<div class="form-group">
-										<label class="control-label col-lg-3">Max Length</label>
-										<div class="col-lg-9">
-											<input type="text" class="form-control input-sm" data-maxlength="6" placeholder="maxlenght = 6">
-										</div>
-									</div>
-									<div class="form-group">
-										<label class="control-label col-lg-3">Range Length</label>
-										<div class="col-lg-9">
-											<input type="text" class="form-control input-sm" data-rangelength="[5,10]" placeholder="rangelength = [5,10]">
-										</div>
-									</div>
-									<div class="form-group">
-										<label class="control-label col-lg-3">Min (number)</label>
-										<div class="col-lg-9">
-											<input type="text" class="form-control input-sm" data-min="6" placeholder="Min = 6">
-										</div>
-									</div>
-									<div class="form-group">
-										<label class="control-label col-lg-3">Max (number)</label>
-										<div class="col-lg-9">
-											<input type="text" class="form-control input-sm" data-max="100" placeholder="Max = 100">
-										</div>
-									</div>
-									<div class="form-group">
-										<label class="control-label col-lg-3">Range (number)</label>
-										<div class="col-lg-9">
-											<input type="text" class="form-control input-sm" data-range="[6, 100]" placeholder="range = [6,100]">
-										</div>
-									</div>
-									<div class="form-group">
-										<label class="control-label col-lg-3">Equal To</label>
-										<div class="col-lg-9">
-											<input type="password" placeholder="Password" class="form-control input-sm" id="textbox1">
-											<div class="seperator"></div>
-											<input type="password" placeholder="Confirm Password" class="form-control input-sm" data-equalto="#textbox1">
-										</div>
-									</div>
-								</div>
-								<div class="panel-footer">
-									<button type="submit" class="btn btn-success">Submit</button>
-								</div>
-							</form>
-						</div>
+								<div class="panel panel-default table-responsive">
+					<div class="panel-heading">
+						<span class="pull-right">
+							<a href="addproponent.php" class="btn btn-success"><i class="fa fa-plus-circle"></i> Add Proponent</a>
+						</span>
 					</div>
+					<div class="padding-md clearfix">
+						<table class="table table-striped" id="dataTable">
+							<thead>
+								<tr>
+									<th>Proponent's Name</th>
+									<th>Contact Number</th>
+									<th>Email</th>
+									<th>Location</th>
+									<th>Actions</th>
+								</tr>
+							</thead>
+							<tbody>
+									<?php
+										$propsql = mysql_query("SELECT master_proponent.*,location.*,location_details.* 
+																FROM master_proponent INNER JOIN location_details
+																ON master_proponent.prop_loc_id = location_details.locdet_id
+																INNER JOIN location
+																ON location_details.locationID = location.location_id")
+																or die (mysql_error());
+										$fetch_propsql = mysql_fetch_assoc($propsql);
+									 do
+									 {
+									 	printf("<tr>");
+									 	printf("<td>%s</td>",$fetch_propsql['prop_name']);
+									 	printf("<td>%s</td>",$fetch_propsql['prop_contactnum']);
+									 	printf("<td>%s</td>",$fetch_propsql['prop_email']);
+									 	printf("<td>%s</td>",$fetch_propsql['street']." ".$fetch_propsql['brgy']." ".$fetch_propsql['city']);
+									 	printf("<td>
+									 			<a class='btn btn-primary'><i class='fa fa-share-square-o'></i> Gen. Info.</a>
+									 			<a class='btn btn-primary'>Documents <i class='fa fa-chevron-right'></i></a>
+									 		  </td>");
+									 }while($fetch_propsql=mysql_fetch_assoc($propsql));
 
+									?>
+								</tr>
+							</tbody>
+						</table>
+					</div>
 				</div>
-			</div>
-	</div>
-
-
-</div>
 
 <a href="#" id="scroll-to-top" class="hidden-print"><i class="fa fa-chevron-up"></i></a>
 
@@ -134,54 +92,39 @@
 	
 
 
-<script src="js/jquery-1.10.2.min.js"></script>
-	
-	<!-- Bootstrap -->
-    <script src="bootstrap/js/bootstrap.min.js"></script>
-    
-	<!-- Chosen -->
-	<script src='js/chosen.jquery.min.js'></script>	
-
-	<!-- Mask-input -->
-	<script src='js/jquery.maskedinput.min.js'></script>	
-
-	<!-- Datepicker -->
-	<script src='js/bootstrap-datepicker.min.js'></script>	
-
-	<!-- Timepicker -->
-	<script src='js/bootstrap-timepicker.min.js'></script>	
-	
-	<!-- Slider -->
-	<script src='js/bootstrap-slider.min.js'></script>	
-	
-	<!-- Tag input -->
-	<script src='js/jquery.tagsinput.min.js'></script>	
-
-	<!-- WYSIHTML5 -->
-	<script src='js/wysihtml5-0.3.0.min.js'></script>	
-	<script src='js/uncompressed/bootstrap-wysihtml5.js'></script>	
-
-	<!-- Dropzone -->
-	<script src='js/dropzone.min.js'></script>	
-	
-	<!-- Modernizr -->
+	<script src="js/jquery-1.10.2.min.js"></script>
+	<script src="bootstrap/js/bootstrap.min.js"></script>
+ 	<script src='js/jquery.dataTables.min.js'></script>	
 	<script src='js/modernizr.min.js'></script>
-	
-	<!-- Pace -->
 	<script src='js/pace.min.js'></script>
-	
-	<!-- Popup Overlay -->
 	<script src='js/jquery.popupoverlay.min.js'></script>
-	
-	<!-- Slimscroll -->
 	<script src='js/jquery.slimscroll.min.js'></script>
-	
-	<!-- Cookie -->
 	<script src='js/jquery.cookie.min.js'></script>
-
-	<!-- Endless -->
-	<script src="js/endless/endless_form.js"></script>
 	<script src="js/endless/endless.js"></script>
+	
+	<script>
+		$(function	()	{
+			$('#dataTable').dataTable( {
+				"bJQueryUI": true,
+				"sPaginationType": "full_numbers"
+			});
+			
+			$('#chk-all').click(function()	{
+				if($(this).is(':checked'))	{
+					$('#responsiveTable').find('.chk-row').each(function()	{
+						$(this).prop('checked', true);
+						$(this).parent().parent().parent().addClass('selected');
+					});
+				}
+				else	{
+					$('#responsiveTable').find('.chk-row').each(function()	{
+						$(this).prop('checked' , false);
+						$(this).parent().parent().parent().removeClass('selected');
+					});
+				}
+			});
+		});
+	</script>
 	
   </body>
 </html>

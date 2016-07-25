@@ -17,6 +17,8 @@
 	<link href="css/bootstrap-timepicker.css" rel="stylesheet"/>
 	<link href="css/jquery.tagsinput.css" rel="stylesheet"/>
 	<link href="css/bootstrap-wysihtml5.css" rel="stylesheet"/>
+	<link href="css/jquery.dataTables_themeroller.css" rel="stylesheet">
+	
 </head>
 <body class="overflow-hidden">
 	<div id="overlay" class="transparent"></div>
